@@ -19,7 +19,7 @@ public:
     void setMaxTime(int maxTime);
     void appendProcess(Process process);
     bool isEmpty();
-    Process run(IO &io);
+    Process run(IO &io, ProcessQueue &nextQueue);
 };
 
 class RoundRobinQueue : public ProcessQueue

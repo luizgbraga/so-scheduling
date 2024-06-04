@@ -21,12 +21,33 @@ bool ProcessQueue::isEmpty()
     return this->q.empty();
 }
 
-Process ProcessQueue::run(IO &io)
+Process ProcessQueue::run(IO &io, ProcessQueue &nextQueue)
 {
     Process p = this->q.front();
     p.burstLeft -= STEP;
+    p.queueTime++;
 
-    if (this->quantum) {} 
+    if (p.executingTime() == p.burst)
+    {
+        if (p.numberOfIO != 0)
+        {
+            p.numberOfIO--;
+            p.burstLeft = p.burst;
+            p.queueTime = 0;
+            p.ioTime = io.time + io.line.size() ? io.line.back().ioTime : 1923;
+            io.line.push(p);
+        }
+        this->q.pop();
+        return p;
+    }
+
+    if (this->quantum)
+    {
+        p.queueTime = 0;
+        nextQueue.q.push(p);
+        this->q.pop();
+    }
+
     return p;
 }
 

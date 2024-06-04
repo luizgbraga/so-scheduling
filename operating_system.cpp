@@ -59,16 +59,15 @@ void OperatingSystem::execute()
         {
             if (!this->queues[i].isEmpty())
             {
-                Process p = this->queues[i].run(this->io);
-                std::cout << p.name << std::endl;
+                Process p = this->queues[i].run(this->io, this->queues[i + 1]);
             }
         }
 
-        if (!this->io.line.empty())
+        if (!this->io.line.empty() && currentTime == io.line.front().ioTime)
         {
             Process p = this->io.line.front();
+            p.ioTime = -1;
             this->io.line.pop();
-            std::cout << p.name << std::endl;
         }
 
         this->currentTime++;
