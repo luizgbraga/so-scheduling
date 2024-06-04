@@ -26,34 +26,7 @@ Process ProcessQueue::run(IO &io)
     Process p = this->q.front();
     p.burstLeft -= STEP;
 
-    std::queue<Process> aux = std::queue<Process>();
-    aux.push(p);
-    this->q.pop();
-    while (!this->q.empty())
-    {
-        Process p = this->q.front();
-        this->q.pop();
-        aux.push(p);
-    }
-
-    while (!aux.empty())
-    {
-        Process p = aux.front();
-        aux.pop();
-        this->q.push(p);
-    }
-
-    if (p.burst == 0)
-    {
-        this->q.pop();
-    }
-
-    if (p.burst == 0 && p.numberOfIO > 0)
-    {
-        p.numberOfIO--;
-        io.line.push(p);
-    }
-
+    if (this->quantum) {} 
     return p;
 }
 

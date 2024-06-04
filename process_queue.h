@@ -12,6 +12,7 @@ class ProcessQueue
 protected:
     std::queue<Process> q;
     int maxTime;
+    int quantum;
 
 public:
     ProcessQueue();
@@ -23,7 +24,6 @@ public:
 
 class RoundRobinQueue : public ProcessQueue
 {
-    int quantum;
 
 public:
     RoundRobinQueue(int quantum);

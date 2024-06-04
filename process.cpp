@@ -6,7 +6,6 @@ Process::Process(std::string name, int burst, int numberOfIO)
     this->burst = burst;
     this->burstLeft = burst;
     this->numberOfIO = numberOfIO;
-    this->timeInQ1 = 0;
 }
 
 int Process::executingTime()

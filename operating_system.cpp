@@ -34,9 +34,45 @@ void OperatingSystem::appendQueue(ProcessQueue queue)
     this->queues.push_back(queue);
 }
 
+bool OperatingSystem::allEmpty()
+{
+    for (int i = 0; i < this->queues.size(); i++)
+    {
+        if (!this->queues[i].isEmpty())
+        {
+            return false;
+        }
+    }
+    if (!this->io.line.empty())
+    {
+        return false;
+    }
+
+    return true;
+}
+
 void OperatingSystem::execute()
 {
-    // execute
+    while (!this->allEmpty())
+    {
+        for (int i = 0; i < this->queues.size(); i++)
+        {
+            if (!this->queues[i].isEmpty())
+            {
+                Process p = this->queues[i].run(this->io);
+                std::cout << p.name << std::endl;
+            }
+        }
+
+        if (!this->io.line.empty())
+        {
+            Process p = this->io.line.front();
+            this->io.line.pop();
+            std::cout << p.name << std::endl;
+        }
+
+        this->currentTime++;
+    }
 }
 
 OperatingSystem::OperatingSystem(IO io)

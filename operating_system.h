@@ -6,6 +6,7 @@
 
 class OperatingSystem
 {
+    int currentTime = 0;
     std::vector<Process> processes;
     std::vector<ProcessQueue> queues;
     IO io;
@@ -14,6 +15,7 @@ public:
     static OperatingSystem init(IO io);
     void askForProccessesInput();
     void appendQueue(ProcessQueue queue);
+    bool allEmpty();
     void execute();
 
 private:
