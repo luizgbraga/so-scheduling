@@ -4,14 +4,10 @@
 int main()
 {
     OperatingSystem os = OperatingSystem::init(IO(20));
-    RoundRobinQueue rr = RoundRobinQueue(10);
-    FCFSQueue fcfs = FCFSQueue();
-    fcfs.setMaxTime(30);
+    os.q0 = RoundRobinQueue(10);
+    os.q1 = FCFSQueue(30);
 
     os.askForProccessesInput();
-    os.appendQueue(rr);
-    os.appendQueue(fcfs);
-
     os.execute();
 
     return 0;

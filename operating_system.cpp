@@ -25,23 +25,16 @@ void OperatingSystem::askForProccessesInput()
 
         std::string name = "P" + std::to_string(i + 1);
 
-        this->appendProcess(Process(name, burst, io));
+        this->q0.appendProcess(Process(name, burst, io));
     };
 };
 
-void OperatingSystem::appendQueue(ProcessQueue queue)
-{
-    this->queues.push_back(queue);
-}
-
 bool OperatingSystem::allEmpty()
 {
-    for (int i = 0; i < this->queues.size(); i++)
+
+    if (!this->q0.isEmpty() || !this->q1.isEmpty())
     {
-        if (!this->queues[i].isEmpty())
-        {
-            return false;
-        }
+        return false;
     }
     if (!this->io.line.empty())
     {
@@ -55,11 +48,50 @@ void OperatingSystem::execute()
 {
     while (!this->allEmpty())
     {
-        for (int i = 0; i < this->queues.size(); i++)
+        if (!this->q0.isEmpty())
         {
-            if (!this->queues[i].isEmpty())
+            Process &p = q0.q.front();
+            p.burstLeft--;
+            p.queueTime++;
+            if (p.executingTime() == p.burst)
             {
-                Process p = this->queues[i].run(this->io, this->queues[i + 1]);
+                if (p.numberOfIO > 0)
+                {
+                    p.numberOfIO--;
+                    p.burstLeft = p.burst;
+                    p.queueTime = 0;
+                    p.ioTime = this->io.time + this->io.line.size() ? this->io.line.back().ioTime : currentTime;
+                    this->io.line.push(p);
+                }
+                this->q0.q.pop();
+            }
+            else
+            {
+                if (p.queueTime == q0.quantum)
+                {
+                    p.queueTime = -1;
+                    q1.q.push(p);
+                    q0.q.pop();
+                }
+            }
+        }
+
+        if (!this->q1.isEmpty())
+        {
+            Process &p = q1.q.front();
+            p.burstLeft--;
+            p.queueTime++;
+            if (p.executingTime() == p.burst)
+            {
+                if (p.numberOfIO > 0)
+                {
+                    p.numberOfIO--;
+                    p.burstLeft = p.burst;
+                    p.queueTime = 0;
+                    p.ioTime = this->io.time + this->io.line.size() ? this->io.line.back().ioTime : currentTime;
+                    this->io.line.push(p);
+                }
+                this->q1.q.pop();
             }
         }
 
@@ -67,21 +99,16 @@ void OperatingSystem::execute()
         {
             Process p = this->io.line.front();
             p.ioTime = -1;
+            q0.q.push(p);
             this->io.line.pop();
         }
 
+        //ver se algum ta com tempo lim de q1
         this->currentTime++;
     }
 }
 
 OperatingSystem::OperatingSystem(IO io)
 {
-    this->processes = std::vector<Process>();
-    this->queues = std::vector<ProcessQueue>();
     this->io = io;
-}
-
-void OperatingSystem::appendProcess(Process process)
-{
-    this->processes.push_back(process);
 }

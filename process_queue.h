@@ -9,32 +9,34 @@ const int STEP = 1;
 
 class ProcessQueue
 {
-protected:
-    std::queue<Process> q;
-    int maxTime;
-    int quantum;
-
 public:
+    std::queue<Process> q;
     ProcessQueue();
-    void setMaxTime(int maxTime);
     void appendProcess(Process process);
     bool isEmpty();
-    Process run(IO &io, ProcessQueue &nextQueue);
 };
 
 class RoundRobinQueue : public ProcessQueue
 {
 
 public:
+    RoundRobinQueue();
     RoundRobinQueue(int quantum);
     bool mustPreempt();
     void preempt(std::queue<Process> &q1);
+    int quantum;
+
+private:
 };
 
 class FCFSQueue : public ProcessQueue
 {
 public:
     FCFSQueue();
+    FCFSQueue(int maxTime);
+    int maxTime;
+
+private:
 };
 
 #endif

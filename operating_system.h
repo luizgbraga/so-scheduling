@@ -7,20 +7,18 @@
 class OperatingSystem
 {
     int currentTime = 0;
-    std::vector<Process> processes;
-    std::vector<ProcessQueue> queues;
     IO io;
 
 public:
     static OperatingSystem init(IO io);
+    RoundRobinQueue q0;
+    FCFSQueue q1;
     void askForProccessesInput();
-    void appendQueue(ProcessQueue queue);
     bool allEmpty();
     void execute();
 
 private:
     OperatingSystem(IO io);
-    void appendProcess(Process process);
 };
 
 #endif
