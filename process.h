@@ -11,7 +11,7 @@ public:
     int burst;
     int burstLeft;
     int numberOfIO;
-    int ioTime;
+    int timeToLeaveIO;
     int queueTime;
 
     Process(std::string name, int burst, int numberOfIO);

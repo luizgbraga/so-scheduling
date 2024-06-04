@@ -6,7 +6,7 @@ Process::Process(std::string name, int burst, int numberOfIO)
     this->burst = burst;
     this->burstLeft = burst;
     this->numberOfIO = numberOfIO;
-    this->ioTime = -1;
+    this->timeToLeaveIO = -1;
     this->queueTime = 0;
 }
 

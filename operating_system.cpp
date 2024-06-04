@@ -60,7 +60,7 @@ void OperatingSystem::execute()
                     p.numberOfIO--;
                     p.burstLeft = p.burst;
                     p.queueTime = 0;
-                    p.ioTime = this->io.time + this->io.line.size() ? this->io.line.back().ioTime : currentTime;
+                    p.timeToLeaveIO = this->io.time + this->io.line.size() ? this->io.line.back().timeToLeaveIO : currentTime;
                     this->io.line.push(p);
                 }
                 this->q0.q.pop();
@@ -88,22 +88,22 @@ void OperatingSystem::execute()
                     p.numberOfIO--;
                     p.burstLeft = p.burst;
                     p.queueTime = 0;
-                    p.ioTime = this->io.time + this->io.line.size() ? this->io.line.back().ioTime : currentTime;
+                    p.timeToLeaveIO = this->io.time + this->io.line.size() ? this->io.line.back().timeToLeaveIO : currentTime;
                     this->io.line.push(p);
                 }
                 this->q1.q.pop();
             }
         }
 
-        if (!this->io.line.empty() && currentTime == io.line.front().ioTime)
+        if (!this->io.line.empty() && currentTime == io.line.front().timeToLeaveIO)
         {
             Process p = this->io.line.front();
-            p.ioTime = -1;
+            p.timeToLeaveIO = -1;
             q0.q.push(p);
             this->io.line.pop();
         }
 
-        //ver se algum ta com tempo lim de q1
+        // ver se algum ta com tempo lim de q1
         this->currentTime++;
     }
 }
