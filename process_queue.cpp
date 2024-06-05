@@ -15,6 +15,18 @@ bool ProcessQueue::isEmpty()
     return this->q.empty();
 }
 
+void ProcessQueue::push(Process process)
+{
+    this->q.push(process);
+}
+
+Process ProcessQueue::pop()
+{
+    Process p = this->q.front();
+    this->q.pop();
+    return p;
+}
+
 RoundRobinQueue::RoundRobinQueue(){};
 
 RoundRobinQueue::RoundRobinQueue(int quantum)
@@ -39,4 +51,25 @@ FCFSQueue::FCFSQueue(){};
 FCFSQueue::FCFSQueue(int maxTime)
 {
     this->maxTime = maxTime;
+}
+
+std::queue<Process> FCFSQueue::removeOldProcesses()
+{
+    std::queue<Process> toRemove;
+    std::queue<Process> toMantain;
+    while (!this->q.empty())
+    {
+        Process p = this->q.front();
+        if (p.queueTime == this->maxTime)
+        {
+            toRemove.push(p);
+        }
+        else
+        {
+            toMantain.push(p);
+        }
+        this->q.pop();
+    }
+    this->q = toMantain;
+    return toRemove;
 }

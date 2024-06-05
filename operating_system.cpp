@@ -32,11 +32,7 @@ void OperatingSystem::askForProccessesInput()
 bool OperatingSystem::allEmpty()
 {
 
-    if (!this->q0.isEmpty() || !this->q1.isEmpty())
-    {
-        return false;
-    }
-    if (!this->io.line.empty())
+    if (!this->q0.isEmpty() || !this->q1.isEmpty() || !this->io.line.empty())
     {
         return false;
     }
@@ -50,60 +46,59 @@ void OperatingSystem::execute()
     {
         if (!this->q0.isEmpty())
         {
-            Process &p = q0.q.front();
+            Process &p = this->q0.q.front();
             p.burstLeft--;
             p.queueTime++;
-            if (p.executingTime() == p.burst)
+            if (p.done())
             {
                 if (p.numberOfIO > 0)
                 {
-                    p.numberOfIO--;
-                    p.burstLeft = p.burst;
-                    p.queueTime = 0;
-                    p.timeToLeaveIO = this->io.time + this->io.line.size() ? this->io.line.back().timeToLeaveIO : currentTime;
-                    this->io.line.push(p);
+                    this->io.appendProcess(p);
                 }
-                this->q0.q.pop();
+                this->q0.pop();
             }
             else
             {
                 if (p.queueTime == q0.quantum)
                 {
                     p.queueTime = -1;
-                    q1.q.push(p);
-                    q0.q.pop();
+                    q1.push(p);
+                    q0.pop();
                 }
             }
         }
 
-        if (!this->q1.isEmpty())
+        else if (!this->q1.isEmpty())
         {
             Process &p = q1.q.front();
             p.burstLeft--;
-            p.queueTime++;
             if (p.executingTime() == p.burst)
             {
                 if (p.numberOfIO > 0)
                 {
-                    p.numberOfIO--;
-                    p.burstLeft = p.burst;
-                    p.queueTime = 0;
-                    p.timeToLeaveIO = this->io.time + this->io.line.size() ? this->io.line.back().timeToLeaveIO : currentTime;
-                    this->io.line.push(p);
+                    this->io.appendProcess(p);
                 }
                 this->q1.q.pop();
             }
         }
 
-        if (!this->io.line.empty() && currentTime == io.line.front().timeToLeaveIO)
+        if (!this->io.line.empty() && currentTime == io.line.front().whenToLeaveIO)
         {
-            Process p = this->io.line.front();
-            p.timeToLeaveIO = -1;
+            Process &p = this->io.line.front();
+            p.whenToLeaveIO = -1;
             q0.q.push(p);
             this->io.line.pop();
         }
 
-        // ver se algum ta com tempo lim de q1
+        std::queue<Process> toRemove = this->q1.removeOldProcesses();
+
+        while (!toRemove.empty())
+        {
+            Process p = toRemove.front();
+            q0.q.push(p);
+            toRemove.pop();
+        }
+
         this->currentTime++;
     }
 }

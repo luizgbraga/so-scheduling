@@ -14,6 +14,8 @@ public:
     ProcessQueue();
     void appendProcess(Process process);
     bool isEmpty();
+    void push(Process process);
+    Process pop();
 };
 
 class RoundRobinQueue : public ProcessQueue
@@ -35,6 +37,7 @@ public:
     FCFSQueue();
     FCFSQueue(int maxTime);
     int maxTime;
+    std::queue<Process> removeOldProcesses();
 
 private:
 };

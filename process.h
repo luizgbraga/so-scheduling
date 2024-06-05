@@ -11,11 +11,12 @@ public:
     int burst;
     int burstLeft;
     int numberOfIO;
-    int timeToLeaveIO;
+    int whenToLeaveIO;
     int queueTime;
 
     Process(std::string name, int burst, int numberOfIO);
     int executingTime();
+    bool done();
 };
 
 #endif

@@ -12,6 +12,8 @@ public:
 
     IO();
     IO(int time);
+    int calculateWhenToLeave(int currentTime);
+    void appendProcess(Process &p);
 };
 
 #endif
