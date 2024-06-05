@@ -25,7 +25,7 @@ void OperatingSystem::askForProccessesInput()
         std::cout << "Number of I/O: ";
         std::cin >> io;
 
-        std::string name = "P" + std::to_string(i + 1);
+        std::string name = "P" + std::to_string(i);
 
         this->q0.appendProcess(Process(name, burst, io));
     };
