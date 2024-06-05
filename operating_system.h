@@ -6,7 +6,7 @@
 
 class OperatingSystem
 {
-    int currentTime = 0;
+    int counter = 0;
     IO io;
 
 public:

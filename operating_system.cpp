@@ -1,5 +1,7 @@
 #include <iostream>
 #include "operating_system.h"
+#include "process.h"
+#include "io.h"
 
 OperatingSystem OperatingSystem::init(IO io)
 {
@@ -47,13 +49,16 @@ void OperatingSystem::execute()
         if (!this->q0.isEmpty())
         {
             Process &p = this->q0.q.front();
+            std::cout << p.name << " - executing in Q0 at " << counter << std::endl;
             p.burstLeft--;
             p.queueTime++;
             if (p.done())
             {
+                std::cout << p.name << " - is done at " << counter << std::endl;
                 if (p.numberOfIO > 0)
                 {
-                    this->io.appendProcess(p);
+                    std::cout << p.name << " - will enter IO at " << counter << std::endl;
+                    this->io.appendProcess(p, counter);
                 }
                 this->q0.pop();
             }
@@ -61,6 +66,7 @@ void OperatingSystem::execute()
             {
                 if (p.queueTime == q0.quantum)
                 {
+                    std::cout << p.name << " - preempted to Q1 because of quantum at " << counter << std::endl;
                     p.queueTime = -1;
                     q1.push(p);
                     q0.pop();
@@ -71,20 +77,25 @@ void OperatingSystem::execute()
         else if (!this->q1.isEmpty())
         {
             Process &p = q1.q.front();
+            std::cout << p.name << " - executing in Q1 at " << counter << std::endl;
             p.burstLeft--;
-            if (p.executingTime() == p.burst)
+            if (p.done())
             {
+                std::cout << p.name << " - is done at " << counter << std::endl;
                 if (p.numberOfIO > 0)
                 {
-                    this->io.appendProcess(p);
+
+                    std::cout << p.name << " - will enter IO at " << counter << std::endl;
+                    this->io.appendProcess(p, counter);
                 }
                 this->q1.q.pop();
             }
         }
 
-        if (!this->io.line.empty() && currentTime == io.line.front().whenToLeaveIO)
+        if (!this->io.line.empty() && counter == io.line.front().whenToLeaveIO)
         {
             Process &p = this->io.line.front();
+            std::cout << p.name << " - leaving I/O at " << counter << std::endl;
             p.whenToLeaveIO = -1;
             q0.q.push(p);
             this->io.line.pop();
@@ -99,7 +110,7 @@ void OperatingSystem::execute()
             toRemove.pop();
         }
 
-        this->currentTime++;
+        this->counter++;
     }
 }
 

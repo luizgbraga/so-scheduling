@@ -13,7 +13,7 @@ public:
     IO();
     IO(int time);
     int calculateWhenToLeave(int currentTime);
-    void appendProcess(Process &p);
+    void appendProcess(Process &p, int currentTime);
 };
 
 #endif

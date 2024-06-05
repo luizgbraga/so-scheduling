@@ -1,4 +1,6 @@
 #include "io.h"
+#include "process.h"
+#include <iostream>
 
 const int STEP = 1;
 
@@ -21,11 +23,11 @@ int IO::calculateWhenToLeave(int currentTime)
     return this->time + currentTime;
 }
 
-void IO::appendProcess(Process &p)
+void IO::appendProcess(Process &p, int currentTime)
 {
     p.numberOfIO--;
     p.burstLeft = p.burst;
     p.queueTime = 0;
-    p.whenToLeaveIO = this->calculateWhenToLeave(p.whenToLeaveIO);
+    p.whenToLeaveIO = this->calculateWhenToLeave(currentTime);
     this->line.push(p);
 }
