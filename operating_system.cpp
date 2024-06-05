@@ -79,6 +79,7 @@ void OperatingSystem::execute()
             Process &p = q1.q.front();
             std::cout << p.name << " - executing in Q1 at " << counter << std::endl;
             p.burstLeft--;
+            p.queueTime = -1;
             if (p.done())
             {
                 std::cout << p.name << " - is done at " << counter << std::endl;
@@ -106,6 +107,7 @@ void OperatingSystem::execute()
         while (!toRemove.empty())
         {
             Process p = toRemove.front();
+            std::cout << "Removing " << p.name << " from Q1 at " << counter << std::endl;
             q0.q.push(p);
             toRemove.pop();
         }
