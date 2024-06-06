@@ -49,15 +49,15 @@ void OperatingSystem::execute()
         if (!this->q0.isEmpty())
         {
             Process &p = this->q0.q.front();
-            std::cout << p.name << " - executing in Q0 at " << counter << std::endl;
+            std::cout << p.name << " - executing in Q0 at " << counter << "ms" << std::endl;
             p.burstLeft--;
             p.queueTime++;
             if (p.done())
             {
-                std::cout << p.name << " - is done at " << counter << std::endl;
+                std::cout << "-> " << p.name << " is done at " << counter + 1 << "ms" << std::endl;
                 if (p.numberOfIO > 0)
                 {
-                    std::cout << p.name << " - will enter IO at " << counter << std::endl;
+                    std::cout << "-> " << p.name << " is entering enter IO queue at " << counter + 1 << "ms" << std::endl;
                     this->io.appendProcess(p, counter);
                 }
                 this->q0.pop();
@@ -66,7 +66,7 @@ void OperatingSystem::execute()
             {
                 if (p.queueTime == q0.quantum)
                 {
-                    std::cout << p.name << " - preempted to Q1 because of quantum at " << counter << std::endl;
+                    std::cout << "-> " << p.name << " was preempted to Q1 because of quantum at " << counter + 1 << "ms" << std::endl;
                     p.queueTime = -1;
                     q1.push(p);
                     q0.pop();
@@ -77,16 +77,16 @@ void OperatingSystem::execute()
         else if (!this->q1.isEmpty())
         {
             Process &p = q1.q.front();
-            std::cout << p.name << " - executing in Q1 at " << counter << std::endl;
+            std::cout << p.name << " - executing in Q1 at " << counter << "ms" << std::endl;
             p.burstLeft--;
             p.queueTime = -1;
             if (p.done())
             {
-                std::cout << p.name << " - is done at " << counter << std::endl;
+                std::cout << "-> " << p.name << " is done at " << counter + 1 << "ms" << std::endl;
                 if (p.numberOfIO > 0)
                 {
 
-                    std::cout << p.name << " - will enter IO at " << counter << std::endl;
+                    std::cout << "-> " << p.name << " is entering enter IO queue at " << counter + 1 << "ms" << std::endl;
                     this->io.appendProcess(p, counter);
                 }
                 this->q1.q.pop();
@@ -96,7 +96,7 @@ void OperatingSystem::execute()
         if (!this->io.line.empty() && counter == io.line.front().whenToLeaveIO)
         {
             Process &p = this->io.line.front();
-            std::cout << p.name << " - leaving I/O at " << counter << std::endl;
+            std::cout << "-> " << p.name << " is leaving I/O at " << counter + 1 << "ms" << std::endl;
             p.whenToLeaveIO = -1;
             q0.q.push(p);
             this->io.line.pop();
@@ -107,7 +107,7 @@ void OperatingSystem::execute()
         while (!toRemove.empty())
         {
             Process p = toRemove.front();
-            std::cout << "Removing " << p.name << " from Q1 at " << counter << std::endl;
+            std::cout << "-> " << p.name << " was removed from Q1 to Q0 at " << counter << "ms" << std::endl;
             q0.q.push(p);
             toRemove.pop();
         }
