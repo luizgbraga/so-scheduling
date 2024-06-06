@@ -63,6 +63,7 @@ std::queue<Process> FCFSQueue::removeOldProcesses()
         p.queueTime++;
         if (p.queueTime == this->maxTime)
         {
+            p.queueTime = 0;
             toRemove.push(p);
         }
         else
